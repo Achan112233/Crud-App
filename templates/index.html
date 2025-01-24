@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head> 
-    <h1>HELLO</h1>
-</body>
-</html>
+{% extends "base.html" %}
+{% block head %}{% endblock %}
+{% block body %}<div class="front-page">
+    <h1>Task Smash</h1>
+    <table>
+        <tr>
+            <th>Task</th>
+            <th>Added</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td>Content</td>
+            <td>Date</td>
+            <td>More</td>
+        </tr>
+    </table>
+    <form action="">
+        <input type="text" name="content" id="content" placeholder="Enter content here"/>
+        <input type="submit" value="Add Task" />
+    </form>
+</div>{% endblock %}
