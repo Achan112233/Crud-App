@@ -4,6 +4,13 @@ from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+Scss(app)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
+db = SQLAlchemy(app)
+
+class Task(db.model):
+    
+    
 
 @app.route("/")
 def index():
