@@ -34,8 +34,9 @@ def index():
             print(f"Error: {e}")
             return f"Error: {e}"
     #view current tasks
-        
-    return render_template("index.html")
+    else:
+        tasks = newTask.query.order_by(newTask.created).all()
+        return render_template("index.html", tasks=tasks)
 
 
 
