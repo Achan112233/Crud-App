@@ -18,9 +18,9 @@
             <tr>
                 <td>{{task.content}}</td>
                 <td>{{task.created.strftime("%Y-%m-%d")}}</td>
-                <td><a href="/delete/{{task.id}}">Delete</a></td>
+                <td><a href="/delete/{{task.id}}">Delete</a>
                 <br>
-                <td><a href="/edit/{{task.id}}">Edit</a></td>
+                <a href="/edit/{{task.id}}">Edit</a></td>
             </tr>
             {% endfor %}
         </table>
