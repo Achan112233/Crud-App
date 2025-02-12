@@ -14,7 +14,7 @@ body {
   background-color: $bg_color;
 }
 
-.front-page {
+.content {
   max-width: 800px;
   margin: 50px auto;
   padding: 20px;
@@ -22,29 +22,29 @@ body {
   border-radius: 10px;
   box-shadow: 0 0px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-}
 
-h1 {
-  color: $primary-hover-color;
-}
+  h1 {
+    color: $primary-hover-color;
+  }
 
-h4 {
-  color: #666;
-}
+  h4 {
+    color: #666;
+  }
 
-table {
-  width: 100%;
-  margin-top: 20px;
-  border-collapse: collapse;
+  table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
 
-  th,
-  td {
-    padding: 10px;
-    border: 1px solid #ccc;
+    th,
+    td {
+      padding: 10px;
+      border: 1px solid #ccc;
 
-    th {
-      background-color: #f0f0f0;
-      color: 333;
+      th {
+        background-color: #f0f0f0;
+        color: 333;
+      }
     }
   }
 
