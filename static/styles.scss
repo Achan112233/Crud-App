@@ -44,4 +44,15 @@ table{
       color: 333;
     }
   }
+
+  a{
+    display: inline-block;
+    padding: 8px 16px;
+    margin: 5px;
+    border-radius: 20px;
+    background-color: $primary-color;
+    color: #ffff;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
 }
