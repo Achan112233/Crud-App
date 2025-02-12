@@ -7,14 +7,14 @@ $success-hover-color: #218838;
 $title-color: #343a40;
 $bg-color: wheat;
 
-body{
+body {
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: $bg_color;
 }
 
-.front-page{
+.front-page {
   max-width: 800px;
   margin: 50px auto;
   padding: 20px;
@@ -24,28 +24,31 @@ body{
   text-align: center;
 }
 
-h1{
+h1 {
   color: $primary-hover-color;
 }
 
-h4{
+h4 {
   color: #666;
 }
 
-table{
+table {
   width: 100%;
   margin-top: 20px;
   border-collapse: collapse;
-  th, td{
+
+  th,
+  td {
     padding: 10px;
     border: 1px solid #ccc;
-    th{
+
+    th {
       background-color: #f0f0f0;
       color: 333;
     }
   }
 
-  a{
+  a {
     display: inline-block;
     padding: 8px 16px;
     margin: 5px;
@@ -55,8 +58,25 @@ table{
     text-decoration: none;
     transition: background-color 0.3s ease;
 
-    &:hover{
+    &:hover {
       background-color: $primary-hover-color;
+    }
+  }
+
+  input {
+    padding: 10px;
+    margin: 5px;
+    border: solid 1px;
+    border-radius: 5px;
+  }
+
+  #btn_add {
+    background-color: $success-color;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $success-hover-color;
     }
   }
 }

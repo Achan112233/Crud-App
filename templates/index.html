@@ -19,15 +19,17 @@
                 <td>{{task.content}}</td>
                 <td>{{task.created.strftime("%Y-%m-%d")}}</td>
                 <td><a href="/delete/{{task.id}}">Delete</a>
-                <br>
-                <a href="/edit/{{task.id}}">Edit</a></td>
+                    <br>
+                    <a href="/edit/{{task.id}}">Edit</a>
+                </td>
             </tr>
             {% endfor %}
         </table>
         {% endif %}
         <form action="/" method="POST">
             <input type="text" name="content" id="content" placeholder="Enter content here" />
-            <input type="submit" value="Add Task" />
+            <input type="submit" value="Add Task" id="btn_add" />
         </form>
 </div>
+
 {% endblock %}
