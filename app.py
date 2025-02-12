@@ -6,6 +6,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 Scss(app)
+#SQLAlchemy config
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db = SQLAlchemy(app)
 
@@ -64,9 +65,6 @@ def edit(id:int):
             return f"Error: {e}"
     else:
         return render_template("edit.html", task=task)
-
-
-
 
 if __name__ == "__main__":
     with app.app_context():
