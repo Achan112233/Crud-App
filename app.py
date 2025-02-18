@@ -4,6 +4,7 @@ from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+#flask config
 app = Flask(__name__)
 Scss(app)
 #SQLAlchemy config
