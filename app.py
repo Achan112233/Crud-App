@@ -59,6 +59,7 @@ def edit(id:int):
     if request.method == "POST":
         task.content = request.form["content"]
         try:
+            #takes back to home if requetst method is POST
             db.session.commit()
             return redirect("/")
         except Exception as e:
