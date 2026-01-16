@@ -22,7 +22,7 @@ AZURE_TENANT_ID = os.getenv("AZURE_TENANT_ID")
 AZURE_CLIENT_ID = os.getenv("AZURE_CLIENT_ID")
 AZURE_CLIENT_SECRET = os.getenv("AZURE_CLIENT_SECRET")
 AZURE_REDIRECT_URI = os.getenv("AZURE_REDIRECT_URI", "http://localhost:5000/auth/callback")
-AUTHORITY = f"https://login.microsoftonline.com/{AZURE_TENANT_ID}/v2.0"
+AUTHORITY = f"https://login.microsoftonline.com/{AZURE_TENANT_ID}"
 
 
 class TokenManager:
@@ -91,9 +91,18 @@ class AzureADAuth:
                 authority=AUTHORITY,
                 client_credential=AZURE_CLIENT_SECRET
             )
+            print(f"✓ Azure AD initialized successfully with tenant: {AZURE_TENANT_ID}")
         except Exception as e:
             print(f"Warning: Failed to initialize Azure AD: {e}")
             print("Auth disabled. You can still use the app locally with SQLite.")
+            # Continue anyway - MSAL can sometimes recover on actual auth attempts
+            try:
+                self.msal_app = msal.ConfidentialClientApplication(
+                    AZURE_CLIENT_ID,
+                    client_credential=AZURE_CLIENT_SECRET
+                )
+            except:
+                pass
     
     def get_auth_url(self) -> str:
         """Get Azure AD authorization URL"""
