@@ -1,0 +1,47 @@
+name: Deploy to Azure Container Instances
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Build and push Docker image
+        run: |
+          az acr build \
+            --registry ${{ secrets.REGISTRY_NAME }} \
+            --image crud-app:${{ github.sha }} \
+            --file Dockerfile .
+      
+      - name: Deploy to Container Instances
+        run: |
+          az container create \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
+            --name crud-app \
+            --image ${{ secrets.REGISTRY_LOGIN_SERVER }}/crud-app:${{ github.sha }} \
+            --registry-login-server ${{ secrets.REGISTRY_LOGIN_SERVER }} \
+            --registry-username ${{ secrets.REGISTRY_USERNAME }} \
+            --registry-password ${{ secrets.REGISTRY_PASSWORD }} \
+            --cpu 1 --memory 1 \
+            --ports 5000 \
+            --dns-name-label crud-app \
+            --environment-variables \
+              USE_AZURE="False" \
+              FLASK_SECRET_KEY="${{ secrets.FLASK_SECRET_KEY }}" \
+              AZURE_TENANT_ID="${{ secrets.AZURE_TENANT_ID }}" \
+              AZURE_CLIENT_ID="${{ secrets.AZURE_CLIENT_ID }}" \
+              AZURE_CLIENT_SECRET="${{ secrets.AZURE_CLIENT_SECRET }}" \
+              AZURE_REDIRECT_URI="http://crud-app.eastus.azurecontainer.io:5000/auth/callback" \
+              JWT_SECRET="${{ secrets.JWT_SECRET }}"

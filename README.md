@@ -273,5 +273,3 @@ See [AZURE_AD_AUTH.md](AZURE_AD_AUTH.md) for more troubleshooting.
 MIT
 
 ---
-
-**Built with Azure Functions - Serverless. Scalable. Secure.** 🚀
