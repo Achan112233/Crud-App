@@ -112,7 +112,7 @@ GET /health         - Health check
 
 ## Support & Documentation
 
-- [Azure Functions Docs](https://learn.microsoft.com/en-us/azure/azure-functions/)
+- [Flask Documentation](https://flask.palletsprojects.com/)
 - [Azure AD Documentation](https://learn.microsoft.com/en-us/azure/active-directory/)
 - [JWT Authentication](https://jwt.io/)
 - [SQLAlchemy ORM](https://docs.sqlalchemy.org/)
