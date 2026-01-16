@@ -1,6 +1,6 @@
-# Serverless Task Manager
+# TaskFlow - Task Manager
 
-A full-stack task management application built with Azure Functions (serverless), Azure AD authentication, and JWT tokens. No VMs required.
+A full-stack task management application built with Flask, SQLAlchemy, and Azure AD authentication. Features secure OAuth 2.0 login, JWT-protected REST API, and an interactive web dashboard.
 
 ## Features
 
@@ -8,29 +8,37 @@ A full-stack task management application built with Azure Functions (serverless)
 ✅ **JWT Token Authentication** - Secure API access  
 ✅ **Multi-user Task Management** - Isolated per-user data  
 ✅ **RESTful API** - Full CRUD operations  
-✅ **Serverless** - Auto-scaling, pay per request  
-✅ **Azure SQL Database** - Cloud-based persistence  
+✅ **Interactive Dashboard** - Real-time task management UI  
+✅ **SQLite/Azure SQL** - Local development or cloud persistence  
 
 ## Tech Stack
 
-- **Backend:** Python 3.11, Azure Functions
-- **Database:** Azure SQL Database (or SQLite)
-- **Authentication:** Azure AD + JWT
-- **Infrastructure:** Azure Functions (Consumption Plan)
+- **Backend:** Python 3.11, Flask
+- **Database:** SQLite (local) or Azure SQL Database
+- **ORM:** SQLAlchemy
+- **Authentication:** Azure AD OAuth 2.0 + JWT
+- **Frontend:** Jinja2 templates, Vanilla JavaScript
 
 ## Project Structure
 
 ```
 Crud-App/
-├── function_app.py          ← Azure Functions entry point (all API routes)
-├── function_app.json        ← Function configuration
+├── app.py                   ← Flask main application with all routes
 ├── auth.py                  ← Azure AD OAuth 2.0 & JWT token management
 ├── database.py              ← SQLAlchemy models (User, Task)
 ├── requirements.txt         ← Python dependencies
-├── .env.example            ← Environment configuration template
-├── .gitignore              ← Git ignore rules
-├── SERVERLESS_DEPLOYMENT.md ← Deployment guide
-└── AZURE_AD_AUTH.md        ← Authentication setup guide
+├── .env.example             ← Environment configuration template
+├── .gitignore               ← Git ignore rules
+├── Dockerfile               ← Container deployment
+├── templates/               ← HTML templates
+│   ├── index.html          ← Landing page
+│   ├── dashboard.html      ← Task management UI
+│   ├── 404.html            ← Error page
+│   └── 500.html            ← Server error page
+├── static/                 ← CSS/JS assets
+│   └── styles.css
+├── AZURE_AD_AUTH.md        ← Authentication setup guide
+└── README.md               ← This file
 ```
 
 ## Quick Start
@@ -48,36 +56,17 @@ cp .env.example .env
 pip install -r requirements.txt
 ```
 
-### 3. Local Development
+### 3. Run Locally
 
 ```bash
-func start
-# API available at: http://localhost:7071/api/
+python app.py
+# Web UI available at: http://localhost:5000
+# API available at: http://localhost:5000/api/
 ```
-
-### 4. Deploy to Azure
-
-```bash
-# Prerequisites: Azure CLI, Azure Functions Core Tools, Azure account
-
-az functionapp create \
-  --resource-group crud-app-rg \
-  --consumption-plan-name crud-app-func-plan \
-  --runtime python \
-  --runtime-version 3.11 \
-  --functions-version 4 \
-  --name my-task-app-functions \
-  --storage-account cruddappstg \
-  --os-type Linux
-
-func azure functionapp publish my-task-app-functions --build remote
-```
-
-See [SERVERLESS_DEPLOYMENT.md](SERVERLESS_DEPLOYMENT.md) for detailed instructions.
 
 ## API Endpoints
 
-All endpoints: `https://<your-function-app>.azurewebsites.net/api/`
+All endpoints: `http://localhost:5000/api/` (local) or `https://<your-app>/api/` (deployed)
 
 ### Authentication
 ```
@@ -105,15 +94,12 @@ GET /health         - Health check
 
 ## Example API Usage
 
-### 1. Login (Get Access Token)
-```bash
-curl https://<your-app>.azurewebsites.net/api/login
-# Redirects to Azure AD login
-```
+### 1. Get Access Token (via Dashboard)
+Login at `http://localhost:5000` with Microsoft account, token stored automatically.
 
 ### 2. Create Task
 ```bash
-curl -X POST https://<your-app>.azurewebsites.net/api/tasks \
+curl -X POST http://localhost:5000/api/tasks \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -126,13 +112,13 @@ curl -X POST https://<your-app>.azurewebsites.net/api/tasks \
 
 ### 3. Get Tasks
 ```bash
-curl https://<your-app>.azurewebsites.net/api/tasks \
+curl http://localhost:5000/api/tasks \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
 ### 4. Update Task Status
 ```bash
-curl -X PATCH https://<your-app>.azurewebsites.net/api/tasks/{task_id}/status \
+curl -X PATCH http://localhost:5000/api/tasks/{task_id}/status \
   -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"status": "completed"}'
@@ -179,7 +165,7 @@ AZURE_SQL_PASSWORD=pass
 AZURE_TENANT_ID=your-tenant-id
 AZURE_CLIENT_ID=your-client-id
 AZURE_CLIENT_SECRET=your-client-secret
-AZURE_REDIRECT_URI=https://my-task-app.azurewebsites.net/api/callback
+AZURE_REDIRECT_URI=http://localhost:5000/auth/callback
 
 # JWT
 JWT_SECRET=your-jwt-secret
@@ -190,43 +176,18 @@ JWT_EXPIRATION_HOURS=24
 
 1. Go to [Azure Portal](https://portal.azure.com)
 2. Navigate to **Azure Active Directory** → **App registrations** → **New registration**
-3. Set **Redirect URI** to: `https://<your-function-app>.azurewebsites.net/api/callback`
+3. Set **Redirect URI** to: `http://localhost:5000/auth/callback`
 4. Copy **Application (Client) ID** and **Directory (Tenant) ID**
 5. Create a **Client Secret** under **Certificates & secrets**
+6. Add values to `.env` file
 
 See [AZURE_AD_AUTH.md](AZURE_AD_AUTH.md) for detailed setup.
 
-## Monitoring & Debugging
-
-```powershell
-# View logs
-az functionapp log tail --resource-group crud-app-rg --name my-task-app-functions
-
-# Check function status
-az functionapp show --resource-group crud-app-rg --name my-task-app-functions
-
-# List deployed functions
-func azure functionapp logstream my-task-app-functions
-```
-
-## Cost Estimate
-
-- **Execution:** First 1 million executions free/month
-- **Storage:** ~$0.50/month
-- **After free tier:** $0.20 per million requests
-
-**Typical usage:** $1-5/month
-
-## Deployment Options
-
-- **Azure Functions** (Current) - Serverless, pay-per-request ✅
-- See [SERVERLESS_DEPLOYMENT.md](SERVERLESS_DEPLOYMENT.md) for details
-
 ## Troubleshooting
 
-### Function won't start
-```powershell
-func start --verbose
+### App won't start
+```bash
+python app.py --verbose
 ```
 
 ### Token validation fails
@@ -234,12 +195,12 @@ func start --verbose
 - Verify token format: `Authorization: Bearer <token>`
 
 ### Database connection error
-- Check `AZURE_SQL_SERVER`, `AZURE_SQL_DATABASE`, credentials
-- Verify firewall rules allow your IP
+- Check SQLite path or Azure SQL credentials
+- Verify database file exists
 
-### Azure AD callback error
-- Ensure `AZURE_REDIRECT_URI` matches app configuration
-- Use `https://` in production
+### Azure AD login fails
+- Ensure `AZURE_REDIRECT_URI` in `.env` matches app config
+- Use `http://localhost:5000/auth/callback` for local dev
 
 See [AZURE_AD_AUTH.md](AZURE_AD_AUTH.md) for more troubleshooting.
 
@@ -253,10 +214,10 @@ See [AZURE_AD_AUTH.md](AZURE_AD_AUTH.md) for more troubleshooting.
 
 ## Next Steps
 
-1. ✅ Serverless backend deployed
-2. ✅ Azure AD authentication working
-3. ✅ REST API fully functional
-4. **TODO:** Frontend dashboard (React/Vue)
+1. ✅ Flask backend with Azure AD authentication
+2. ✅ REST API with JWT protection
+3. ✅ Interactive dashboard UI
+4. **TODO:** Deploy to Azure Container Instances
 5. **TODO:** Email notifications
 6. **TODO:** Task sharing between users
 7. **TODO:** Activity logging
